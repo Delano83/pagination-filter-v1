@@ -5,7 +5,7 @@
 //The correct HTML markup gets appended in the correct place (see filter-example.html) when the page loads.
 //Searching is not case sensitive, you can type "Delano" or "delano"
 //When the search button is pressed, the results should show up.
-//Pagination links should update depending on the number of search results. 
+//Pagination links should update depending on the number of search results.
 
 //get all the main elements on the page
 var page = document.querySelector(".page");
@@ -49,16 +49,16 @@ var searchBar = function createBar (searchString) {
 
 //Create static container for pagination in Js
 var paginationFilter = function pageFilter (nbOfEntries) {
-	//Create the static elements for the pagination 
+	//Create the static elements for the pagination
 	var pagination = document.createElement('div');
 	var ulList = document.createElement('ul');
-	//Giving them attributes to select them easily	
+	//Giving them attributes to select them easily
 	pagination.setAttribute("class", "pagination");
 	ulList.setAttribute("id", "pagelist");
 	//Append the ulList to the main pagination div
 	pagination.appendChild(ulList);
 	//Return the main div that contains all the elements
-	return pagination;	
+	return pagination;
 };
 
 //Finding the number of students
@@ -104,7 +104,7 @@ function createPages () {
 		//Create the dynamic elements in the pagination
 		var liList = document.createElement('li');
 		var pageLink = document.createElement('a');
-		//Set attributes to the pagination links & the li list 
+		//Set attributes to the pagination links & the li list
 		pageLink.setAttribute("href", "#");
 		pageLink.setAttribute("class", "link");
 		liList.setAttribute("class", "pageLi");
@@ -136,7 +136,7 @@ var searchFunction = function searchFeature(searchString) {
 	inputString.onkeyup = function() {
 	//toUpperCase to make it case insensitive
 	var filter = inputString.value.toUpperCase();
-	//loop through all the li's 
+	//loop through all the li's
 	for (var i = 0; i < eachStudent.length; i++) {
 			//Select the student name and retrieve the .innerText value
 			var studentName = document.getElementsByTagName("h3");
@@ -144,9 +144,9 @@ var searchFunction = function searchFeature(searchString) {
 			//Display all the results where indexOf() does not return -1
 			if (studentInfo.toUpperCase().indexOf(filter) != -1)  {
 				eachStudent[i].style.display = 'list-item';
-				count++;				
+					count++;
 			} else {
-				eachStudent[i].style.display = 'none';		
+				eachStudent[i].style.display = 'none';
 			}
 		}
 
@@ -168,39 +168,27 @@ function addElements() {
 
 	pageHeader.appendChild(searchBar());
 	page.appendChild(paginationFilter());
-	
+
 	//Trigger the search function onClick of the 'Search' button
 	var searchButton = document.getElementById("search-button");
 	searchButton.addEventListener("click", searchFunction);
-	//fadeIn();
-	//noResults();
-
 	searchFunction();
-	changePage();
 	createPages();
-
-	//emptySearch();
+	changePage(1);
 }
 
 function changePage (number) {
 	document.addEventListener('DOMContentLoaded', hideAll());
-	document.addEventListener('DOMContentLoaded', showStudents(currentPage));
-	//document.addEventListener('keyup', emptySearch());
+	document.addEventListener('DOMContentLoaded', showStudents(number));
+	document.addEventListener('keyup', showStudents(1));
 }
 
-/*function emptySearch (number) {
+/* emptySearch () {
 	inputSearch.addEventListener("keyup", function(){
-
-		if(this.value != null) {
+		if(this.value == null) {
 			hideAll();
 			showStudents(1);
 		}
 	})
 }*/
-
-
-
 window.onload = addElements();
-
-
-
