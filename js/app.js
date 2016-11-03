@@ -180,7 +180,7 @@ function addElements() {
 function changePage (number) {
 	document.addEventListener('DOMContentLoaded', hideAll());
 	document.addEventListener('DOMContentLoaded', showStudents(number));
-	document.addEventListener('keyup', showStudents(1));
+	document.addEventListener('keyup', showStudents());
 }
 
 /* emptySearch () {
