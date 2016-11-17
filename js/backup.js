@@ -6,6 +6,7 @@
 //Searching is not case sensitive, you can type "Delano" or "delano"
 //When the search button is pressed, the results should show up.
 //Pagination links should update depending on the number of search results.
+
 //get all the main elements on the page
 var page = document.querySelector(".page");
 var pageHeader = document.querySelector(".page-header");
@@ -107,24 +108,22 @@ function showStudents(number) {
 var searchFunction = function searchFeature(searchString) {
 	  var inputString = document.getElementById('inputSearch');
 		var filter = inputString.value.toUpperCase();
-	  showArray = [];
+	  //showArray = [];
+			var resultArray = [];
 
-	for (var i = 0; i < showStudents.length; i++) {
-		var studentName = document.getElementsByTagName("h3");
-		var studentInfo = studentName[i].innerText;
-		if (eachStudent[i].innerText.toUpperCase().indexOf(filter) != -1) {
-			showArray.push(eachStudent[i]);
-			return showArray;
+	for (var i = 0; i < showArray.length; i++) {
+		//var studentName = document.getElementsByTagName("h3");
+		//var studentInfo = studentName[i].innerText;
+			if (eachStudent[i].innerText.toUpperCase().indexOf(filter) != -1) {
+			resultArray.push(eachStudent[i]);
+			return resultArray;
 		}
 			//numberOfpages  = Math.ceil(showArray.length / studentsPerPage);
-		console.log(showArray);
-		console.log(numberOfPages);
+
 }
 }
 
 var numberOfPages = numberOfPages();
-
-
 
 //Create the pagination links dynamically
 function createPages() {

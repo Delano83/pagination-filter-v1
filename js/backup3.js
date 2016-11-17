@@ -7,12 +7,21 @@
 //When the search button is pressed, the results should show up.
 //Pagination links should update depending on the number of search results.
 
-  var page = document.querySelector(".page");
+
   var eachStudent = document.querySelectorAll(".student-item");
+  var page = document.querySelector(".page");
   var numberOfStudents = eachStudent.length;
   var numberOfPages = Math.ceil(numberOfStudents / 10);
-  var pagination = document.createElement("div");
   var studentList = document.querySelector(".student-list");
+  var pagination = document.createElement('div');
+  var i;
+
+  //Start by hiding all the students on the list
+  var hideAll = function() {
+      for (var i = 0; i < eachStudent.length; i++) {
+           eachStudent[i].style.display = "none";
+      }
+  };
 
   //Create function to fade in when the user change pages
   function fadeIn(el) {
@@ -30,30 +39,21 @@
     tick();
   }
 
-  //Start by hiding all the students on the list
-  var hideAll = function() {
-      for(var i = 0; i < eachStudent.length; i++) {
-           eachStudent[i].style.display = "none";
-      }
-  };
-
   //Create a function that shows and hides students from and to a specific index
   function displayStudents(studentsArray, FromIndex, ToIndex) {
        //Start by hiding all the students
       hideAll();
       //Show students from and to a specific index
       for (var i = FromIndex; i < ToIndex; i++) {
-        studentsArray[i].style.display = "block";
+        studentsArray[i].style.display = 'block';
         //Include a fade in transition
         fadeIn(studentsArray[i]);
       }
   }
-    displayStudents(eachStudent, 0, 10);
-
 
   function createPagination(numberOfPages) {
     //Create the static elements for the pagination
-    var ulList = document.createElement("ul");
+    var ulList = document.createElement('ul');
     //Giving them attributes to select them easily
     pagination.setAttribute("class", "pagination");
     ulList.setAttribute("id", "pagelist");
@@ -62,10 +62,10 @@
     pagination.appendChild(ulList);
     for (var i = 1; i <= numberOfPages; i++) {
       //Create the dynamic elements in the pagination
-      var liList = document.createElement("li");
+      var liList = document.createElement('li');
       ulList.appendChild(liList);
       //Create pagination links
-      var pageLink = document.createElement("a");
+      var pageLink = document.createElement('a');
       pageLink.setAttribute("href", "#");
       pageLink.setAttribute("id", i);
       pageLink.innerHTML = i;
@@ -73,7 +73,6 @@
     }
     return pagination;
 }
-    createPagination(numberOfPages);
 
   function show10(studentArray, pageNumber) {
     var showFrom = pageNumber * 10 - 10;
@@ -86,85 +85,71 @@
     }
   }
 
-  //When the user clicks on a page number, go to that page.
+  createPagination(numberOfPages);
+  displayStudents(eachStudent, 0, 10);
+
   pagination.children[0].addEventListener("click", function (e){
           show10(eachStudent, e.target.id);
   });
 
-  //Create a function that will find the results matching the user's query
+  //Find the student's record containing the name
   function searchFunction(){
       //Start by hiding all the students on the page
       hideAll();
-      //Select the main elements we will need on the page.
-            //Select the search bar.
-      var searchBar = document.getElementById("search-input");
-      //Initiate our filter
+      var searchBox = document.getElementById("search-input");
       var filter;
-      //Get the value of our search bar as the user types
-      filter = searchBar.value.toLowerCase();
+      filter = searchBox.value.toLowerCase();
       var mypages = document.getElementById("pagelist");
-      //Get our error messages
-      var error = document.getElementById("errorMessage");
-      //Create our arrays to handle the data
-      //StudentDetails wil handle all the names and emails
-      var studentDetails = [];
-      //filteredStudents will display the names and emails that match the user's query
-      var filteredStudents = [];
-
-            if (mypages) {
+      //remove the initial pagination so we can replace it with the updated one
+          if (mypages) {
               mypages.remove();
           }
-
-
+          //if the element is already there, get rid of it so that messages don't duplicate
+      var error = document.getElementById("errorID");
           if (error){
               error.remove();
           }
 
-
+        var studentDetails = [];
+      //Search the li item to find the record either by name or email address - make sure it is case insensitive
+      //populate the details array to make sure we're just searching the right fields
       for (var i = 0; i < eachStudent.length; i++) {
-        //Select the first children to each student li
-        var detailsFilter = eachStudent[i].children[0];
-        //Push all student name's in the studentDetails array
-        studentDetails.push(detailsFilter.children[1]);
-        //Push all student's emails in the studentDetails array
-        studentDetails.push(detailsFilter.children[2]);
+          //var detailsDiv = eachStudent[i].children[0];
+          studentDetails.push(document.getElementsByTagName("h3"));
+          studentDetails.push(document.querySelectorAll("span[class=email]"));
       }
-
+      //loop over that array, and look for the search value and put it's parent element in a new array
+      var filteredStudents = [];
       for (i = 0; i < studentDetails.length; i++) {
-       if (studentDetails[i].innerText.indexOf(filter) != -1) {
+       if (studentDetails[i].textContent.indexOf(filter) != -1) {
            var detailDiv = studentDetails[i].parentElement;
            var studentLi = detailDiv.parentElement;
            //Show the li
-           if (filteredStudents.indexOf(studentLi) === -1){
-             filteredStudents.push(studentLi);
+           if (filteredStudents.indexOf(studentLi) >= 0){
+           } else {
+               filteredStudents.push(studentLi);
            }
-        }
-      }
 
-      //If there are no results, display an error message.
-      if (filteredStudents.length < 1) {
-          var studentList = document.querySelector(".student-list");
+          }
+      }
+      //If no matches are found, include a message in the HTML to tell the user there are no matches.
+      if (filteredStudents.length === 0) {
           var errorMessage = document.createElement("p");
-          errorMessage.setAttribute("id", "errorMessage");
-          errorMessage.innerHTML = "Your search for " + filter + " did not match any results.";
+          var studentList = document.querySelector(".student-list");
+          errorMessage.id = "errorID";
+          errorMessage.innerHTML = "Sorry, no students containing " + filter + " were found.";
           studentList.appendChild(errorMessage);
       }
 
-
+         //Create the new variable that contains all students in the page
           var updatedPages = Math.ceil(filteredStudents.length / 10);
           if (updatedPages > 1) {
               createPagination(updatedPages);
           }
-          //Call the updated displayStudents function
-          displayStudents(filteredStudents,0,10);
-
-          //Select pagination
-          var mypages = document.getElementById("pagelist");
-          //If there are pages at the bottom of the page
-          if (mypages){
-          //When the user clicks on a page number, go to that page.
-          mypages.addEventListener("click", function (e) {
-          //Call the show10 function to display the corresponding results.
+          displayStudents(filteredStudents,0, 10);
+          var paginationUL = document.getElementById("pagelist");
+          if (paginationUL){
+          paginationUL.addEventListener("click", function (e){
           show10(filteredStudents, e.target.id);
           });
         }
